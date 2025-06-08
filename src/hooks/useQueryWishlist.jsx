@@ -1,18 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import axios from '../libs/axios'  // kendi axios instance’ımızı çağırıyoruz
 
-
-let token = localStorage.getItem(`token`)
 export function getWishlist() {
-return axios.get(`https://ecommerce.routemisr.com/api/v1/wishlist`,{headers:{
-    token
-}})
+  return axios.get(`/wishlist`);
 }
 
-export default function useQueryWishlist(fn) {
-
-    return useQuery({queryKey:['wishList'],queryFn:fn,
-    refetchOnWindowFocus:false
-})
-
+export default function useQueryWishlist(fn = getWishlist) {
+  return useQuery({
+    queryKey: ['wishList'],
+    queryFn: fn,
+    refetchOnWindowFocus: false
+  });
 }

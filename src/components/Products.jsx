@@ -21,7 +21,7 @@ export default function Products() {
       </Helmet>
       <div className="flex flex-wrap">
         {data?.map((prod) => (
-          <ProductItem key={prod?._id} prod={prod}></ProductItem>
+          <ProductItem key={prod?.id} prod={prod}></ProductItem>
         ))}
       </div>
     </div>

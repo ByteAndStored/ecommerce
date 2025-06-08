@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: ecommerce-db
+    environment:
+      - SA_PASSWORD=dataBas*Connecti0n   # kendi güçlü parolanızı girin
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "dataBas*Connecti0n", "-Q", "SELECT 1" ]
+      interval: 10s
+      retries: 5
+
+  api:
+    build:
+      context: ./BackendProj     # Dockerfile’ın olduğu klasör
+      dockerfile: Dockerfile
+    container_name: ecommerce-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=ECommerceDb;User Id=sa;Password=dataBas*Connecti0n;TrustServerCertificate=True;
+    ports:
+      - "5000:80"
+
+volumes:
+  mssql_data:

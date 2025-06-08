@@ -1,18 +1,20 @@
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import React from 'react'
+import { useQuery } from '@tanstack/react-query';
+import axios from '../libs/axios'; // kendi axios instance’ımızı çekiyoruz
+import React from 'react';
 
-let token = localStorage.getItem(`token`)
 export function getCarts() {
-return axios.get(`https://ecommerce.routemisr.com/api/v1/cart`,{headers:{
-    token
-}})
+  let token = localStorage.getItem('token');
+  return axios.get("/cart", {
+    headers: {
+      token,
+    },
+  });
 }
 
 export default function useQueryCart(fn) {
-
-    return useQuery({queryKey:['cart'],queryFn:fn,
-    refetchOnWindowFocus:false
-})
-
+  return useQuery({
+    queryKey: ['cart'],
+    queryFn: fn,
+    refetchOnWindowFocus: false,
+  });
 }

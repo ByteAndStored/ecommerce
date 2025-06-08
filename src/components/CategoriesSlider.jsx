@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../libs/axios'  // 🔧 kendi axios'un
 import React, { useEffect, useState } from 'react'
 import Slider from 'react-slick';
 
@@ -10,36 +10,35 @@ export default function CategoriesSlider() {
     speed: 500,
     slidesToShow: 7,
     slidesToScroll: 1,
-    autoplay:true,
-    autoplaySpeed:2000,
-    arrows:false,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    arrows: false,
   };
-
 
   let [cats, setCats] = useState([])
 
   async function getCat() {
-    let {data} = await axios.get(`https://ecommerce.routemisr.com/api/v1/categories`)
+    let { data } = await axios.get(`/categories`) // 🔧 baseURL zaten otomatik
     setCats(data.data);
-
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getCat()
-  },[])
-
+  }, [])
 
   return (
-    <div className=' container my-12'>
+    <div className='container my-12'>
       <Slider {...settings}>
-      {cats.map(ele=><CatItem key={ele._id} ele={ele}></CatItem>)}
+        {cats.map(ele => <CatItem key={ele._id} ele={ele}></CatItem>)}
       </Slider>
     </div>
   )
 }
 
-function CatItem({ele}) {
-  return <div className='hidden md:block'>
-    <img src={ele.image} className='h-[200px] object-cover' alt="" />
-  </div>
+function CatItem({ ele }) {
+  return (
+    <div className='hidden md:block'>
+      <img src={ele.image} className='h-[200px] object-cover' alt={ele.name} />
+    </div>
+  );
 }

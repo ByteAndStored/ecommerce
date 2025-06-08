@@ -1,11 +1,15 @@
-import axios from "axios";
+import axios from "../libs/axios"; // axios'u kendi yapılandırmamızdan alıyoruz
 
+let token = localStorage.getItem('token');
 
-let token = localStorage.getItem('token')
+export function paymentOnline({ cartId, shippingAddress }) {
+  console.log(cartId.cartId);
 
-export function paymentOnline({cartId,shippingAddress})
-{
-    console.log(cartId.cartId);
-        return axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=http://localhost:5173`,{shippingAddress},{headers:{token}})
-
+  return axios.post(
+    `/orders/checkout-session/${cartId}?url=http://localhost:5173`,
+    { shippingAddress },
+    {
+      headers: { token }
+    }
+  );
 }

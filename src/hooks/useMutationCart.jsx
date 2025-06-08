@@ -1,67 +1,40 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "../libs/axios"; // ✅ merkezi yapı
 import React from "react";
 
-let token = localStorage.getItem('token');
+// Dinamik token çekme fonksiyonu
+function getAuthHeader() {
+  const token = localStorage.getItem("token");
+  return { headers: { token } };
+}
 
-// add to cart
+// Add to cart
 export function addToCart(productId) {
-  return axios.post(
-    `https://ecommerce.routemisr.com/api/v1/cart`,
-    { productId },
-    {
-      headers: {
-        token
-      }
-    }
-  )
-  
+  return axios.post("/cart", { productId }, getAuthHeader());
 }
 
-// delete item from cart
-export function deleteItem(productId) {
-  return axios.delete(
-    `https://ecommerce.routemisr.com/api/v1/cart/${productId}`,
-    {
-      headers: {
-        token
-      }
-    }
-  )
-  
-}
-// update number of the same item
-export function updateCount({productId,count}) {
-  return axios.put(
-    `https://ecommerce.routemisr.com/api/v1/cart/${productId}`,{count},
-    {
-      headers: {
-        token
-      }
-    }
-  )
-  
-}
-// clear all items from cart
-export function clearCart(productId) {
-  return axios.delete(
-    `https://ecommerce.routemisr.com/api/v1/cart/`,
-    {
-      headers: {
-        token
-      }
-    }
-  )
-  
+// Delete item from cart
+export function deleteaItem(productId) {
+  return axios.delete(`/cart/${productId}`, getAuthHeader());
 }
 
+// Update item count
+export function updateCount({ productId, count }) {
+  return axios.put(`/cart/${productId}`, { count }, getAuthHeader());
+}
+
+// Clear all cart
+export function clearCart() {
+  return axios.delete(`/cart`, getAuthHeader());
+}
 
 export default function useMutationCart(fn) {
+  const queryClient = useQueryClient();
 
-  const queryClient = useQueryClient()
-
-
-  return useMutation({ mutationFn:fn ,onSuccess:()=>{
-    queryClient.invalidateQueries({ queryKey: ['cart'] })
-  }});
+  return useMutation({
+    mutationFn: fn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
 }
